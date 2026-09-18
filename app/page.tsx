@@ -1074,9 +1074,10 @@ export default function HomePage() {
 
       {/* HOME MENU UI LAYER (Fades smoothly during transition) */}
       <div className={`menu-ui-layer ${!isHomeVisible && !isHomeFading ? "pointer-events-none opacity-0" : ""} ${isHomeFading ? "fade-out" : ""}`}>
-        {/* Top bar with single Account button */}
+        {/* Top bar with Account button and Settings button */}
         <header className="top-bar">
           <AccountButton />
+          <SettingsButton onOpenAdvanced={() => setIsEnvironmentSettingsOpen(true)} />
         </header>
 
         {/* Central hero UI positioned directly beneath the 3D floating island */}
@@ -1102,14 +1103,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Corner Menu Soundtrack Player Widget */}
-        <div className="absolute left-[clamp(16px,2.5vw,30px)] bottom-[clamp(16px,2.5vw,30px)] z-10 pointer-events-auto">
+        {/* Menu Soundtrack Player Widget */}
+        <div className="menu-audio-container">
           <MenuAudioWidget />
-        </div>
-
-        {/* Clean circular settings gear button */}
-        <div className="corner-settings">
-          <SettingsButton onOpenAdvanced={() => setIsEnvironmentSettingsOpen(true)} />
         </div>
       </div>
 

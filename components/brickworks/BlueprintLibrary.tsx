@@ -54,7 +54,7 @@ export function SaveBlueprintDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[380px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
+      <DialogContent className="w-[calc(100vw-24px)] sm:max-w-[380px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-black tracking-tight">
             Save as Blueprint
@@ -135,7 +135,7 @@ export function RenameBlueprintDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[380px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
+      <DialogContent className="w-[calc(100vw-24px)] sm:max-w-[380px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-black tracking-tight">
             Rename Blueprint
@@ -187,7 +187,7 @@ export function DeleteBlueprintConfirmDialog({
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[400px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
+      <DialogContent className="w-[calc(100vw-24px)] sm:max-w-[400px] border-white/20 bg-[#0d1b2e]/95 text-white backdrop-blur-2xl shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-black tracking-tight text-red-400">
             Delete Blueprint
@@ -453,7 +453,7 @@ export function BlueprintLibrary({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[520px] max-h-[85vh] border-white/15 bg-[#0b1628]/95 text-white backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden">
+        <DialogContent className="w-[calc(100vw-24px)] sm:max-w-[520px] max-h-[88dvh] border-white/15 bg-[#0b1628]/95 text-white backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden">
           <DialogHeader className="shrink-0">
             <div className="flex items-center justify-between">
               <DialogTitle className="flex items-center gap-2 text-xl font-black tracking-tight">

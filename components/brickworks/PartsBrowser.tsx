@@ -223,7 +223,7 @@ export function PartsBrowser({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[720px] max-h-[85vh] border-white/15 bg-[#0b1628]/95 text-white backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden p-0">
+      <DialogContent className="w-[calc(100vw-24px)] sm:max-w-[720px] max-h-[88dvh] border-white/15 bg-[#0b1628]/95 text-white backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden p-0">
         {/* Header */}
         <DialogHeader className="p-4 pb-2 border-b border-white/10 shrink-0">
           <div className="flex items-center justify-between">

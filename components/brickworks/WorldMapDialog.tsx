@@ -344,19 +344,19 @@ export function WorldMapDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[92vh] flex flex-col p-0 overflow-hidden bg-slate-950/95 border-white/10 text-white shadow-2xl backdrop-blur-xl">
-        <DialogHeader className="px-6 py-4 border-b border-white/10 flex flex-row items-center justify-between">
+      <DialogContent className="w-[calc(100vw-24px)] sm:max-w-4xl max-h-[88dvh] flex flex-col p-0 overflow-hidden bg-slate-950/95 border-white/10 text-white shadow-2xl backdrop-blur-xl">
+        <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2.5">
-            <Compass className="text-amber-400" size={20} />
+            <Compass className="text-amber-400 shrink-0" size={20} />
             <DialogTitle className="text-lg font-bold text-white tracking-wide">
               WORLD MAP
             </DialogTitle>
-            <span className="text-xs text-slate-400 font-mono ml-2">
+            <span className="text-xs text-slate-400 font-mono ml-2 truncate">
               {world?.name} • {world?.exploredChunks?.length || 1} Chunks Explored
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 mr-6">
+          <div className="flex items-center gap-1.5 self-end sm:self-auto mr-6 sm:mr-6">
             <button
               onClick={() => setZoom((prev) => Math.min(24, prev * 1.3))}
               className="p-1.5 rounded-md hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
@@ -388,9 +388,9 @@ export function WorldMapDialog({
           </div>
         </DialogHeader>
 
-        <div className="flex flex-1 min-h-[460px] overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1 min-h-[360px] sm:min-h-[460px] overflow-hidden">
           {/* Interactive Map Canvas */}
-          <div className="relative flex-1 bg-slate-950 overflow-hidden cursor-grab active:cursor-grabbing">
+          <div className="relative flex-1 min-h-[220px] bg-slate-950 overflow-hidden cursor-grab active:cursor-grabbing">
             <canvas
               ref={canvasRef}
               width={640}
@@ -421,7 +421,7 @@ export function WorldMapDialog({
           </div>
 
           {/* Waypoints Management Panel */}
-          <div className="w-72 border-l border-white/10 bg-slate-900/50 flex flex-col p-4 overflow-y-auto">
+          <div className="w-full md:w-72 border-t md:border-t-0 md:border-l border-white/10 bg-slate-900/50 flex flex-col p-3 sm:p-4 max-h-[200px] md:max-h-none overflow-y-auto shrink-0">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                 <MapPin size={13} className="text-amber-400" />

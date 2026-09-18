@@ -194,10 +194,10 @@ export function MyWorldsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="my-builds-dialog-panel border-white/35 bg-[#0a2e5c]/95 text-white shadow-[0_30px_90px_rgba(0,18,50,.65)] backdrop-blur-3xl sm:max-w-[660px] max-h-[85vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="my-builds-dialog-panel border-white/35 bg-[#0a2e5c]/95 text-white shadow-[0_30px_90px_rgba(0,18,50,.65)] backdrop-blur-3xl w-[calc(100vw-24px)] sm:max-w-[660px] max-h-[88dvh] flex flex-col p-0 overflow-hidden">
         {/* Header */}
-        <DialogHeader className="p-6 pb-4 border-b border-white/15">
-          <div className="flex items-center justify-between">
+        <DialogHeader className="p-4 sm:p-6 pb-4 border-b border-white/15">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="p-2.5 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 shadow-md shadow-amber-500/30 text-stone-900">
                 <Compass size={22} strokeWidth={2.8} />
@@ -215,7 +215,7 @@ export function MyWorldsDialog({
             {/* Create New World Button */}
             <button
               type="button"
-              className="new-build-modal-button"
+              className="new-build-modal-button self-start sm:self-auto"
               onClick={() => {
                 onNewWorld();
                 onClose();
@@ -275,7 +275,7 @@ export function MyWorldsDialog({
                   key={w.id}
                   className={`build-card-item ${isCurrent ? "is-current-build" : ""}`}
                 >
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {isRenaming ? (
                         <div className="flex items-center gap-2">
@@ -287,7 +287,7 @@ export function MyWorldsDialog({
                               if (e.key === "Enter") handleConfirmRename(w.id);
                               if (e.key === "Escape") setRenamingId(null);
                             }}
-                            className="px-3 py-1.5 rounded-xl bg-white/15 border border-white/30 text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                            className="px-3 py-1.5 rounded-xl bg-white/15 border border-white/30 text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 w-full"
                             maxLength={80}
                             autoFocus
                           />
@@ -340,9 +340,9 @@ export function MyWorldsDialog({
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center justify-end gap-1.5 w-full sm:w-auto border-t sm:border-t-0 pt-2 sm:pt-0 border-white/10">
                       {isDeleting ? (
-                        <div className="flex items-center gap-2 bg-red-950/60 p-1.5 rounded-xl border border-red-500/40">
+                        <div className="flex items-center gap-2 bg-red-950/60 p-1.5 rounded-xl border border-red-500/40 w-full sm:w-auto justify-end">
                           <span className="text-xs text-red-200 font-bold px-1">Delete?</span>
                           <button
                             type="button"
@@ -392,7 +392,7 @@ export function MyWorldsDialog({
                           <button
                             type="button"
                             onClick={() => handleOpen(w.id)}
-                            className="ml-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-300 hover:to-green-400 text-stone-950 font-black text-xs shadow-md shadow-emerald-500/25 transition cursor-pointer"
+                            className="ml-auto sm:ml-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-300 hover:to-green-400 text-stone-950 font-black text-xs shadow-md shadow-emerald-500/25 transition cursor-pointer"
                           >
                             PLAY
                           </button>
