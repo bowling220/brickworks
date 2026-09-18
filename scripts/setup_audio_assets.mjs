@@ -272,39 +272,11 @@ function createWaterLoop(durationSec = 5.0) {
 }
 
 /**
- * Generates daytime bird chirps with phase-continuous harmonic synthesis
- * and zero-crossing Hann windows to eliminate clicking artifacts.
+ * Generates daytime bird chirps (silenced per user request)
  */
 function createBirdsAmbience(durationSec = 8.0) {
   const numSamples = Math.floor(SAMPLE_RATE * durationSec);
-  const samples = new Float32Array(numSamples);
-  // Natural distant bird chirps at 1.8s and 5.2s
-  const chirps = [
-    { start: 1.8, dur: 0.18, fStart: 2800, fEnd: 3600 },
-    { start: 2.1, dur: 0.22, fStart: 3400, fEnd: 2900 },
-    { start: 5.2, dur: 0.20, fStart: 3000, fEnd: 3800 },
-    { start: 5.5, dur: 0.16, fStart: 3600, fEnd: 3200 },
-  ];
-
-  for (const c of chirps) {
-    const startIdx = Math.floor(c.start * SAMPLE_RATE);
-    const chirpLen = Math.floor(c.dur * SAMPLE_RATE);
-    let phase = 0;
-    for (let i = 0; i < chirpLen; i++) {
-      const idx = startIdx + i;
-      if (idx >= numSamples) break;
-      const progress = i / chirpLen;
-      // Hann window for ultra-smooth start and end with zero click/pop
-      const env = 0.5 * (1 - Math.cos(2 * Math.PI * progress));
-      // Smooth frequency glissando
-      const currentFreq = c.fStart + (c.fEnd - c.fStart) * progress;
-      phase += (2 * Math.PI * currentFreq) / SAMPLE_RATE;
-      // Gentle harmonic tone with fundamental + subtle overtone
-      const tone = Math.sin(phase) + 0.15 * Math.sin(phase * 2);
-      samples[idx] += tone * env * 0.08;
-    }
-  }
-  return samples;
+  return new Float32Array(numSamples);
 }
 
 /**

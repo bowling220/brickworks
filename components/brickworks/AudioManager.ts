@@ -195,7 +195,7 @@ export class AudioManager {
 
     this.startLoop("/audio/ambience/wind_gentle.wav", this.windGentleGain);
     this.startLoop("/audio/ambience/wind_strong.wav", this.windStrongGain);
-    this.startLoop("/audio/ambience/birds_daytime.wav", this.birdsGain);
+    // Bird chirps disabled per user request
     this.startLoop("/audio/ambience/crickets_night.wav", this.cricketsGain);
     this.startLoop("/audio/weather/rain_light.wav", this.rainLightGain);
     this.startLoop("/audio/weather/rain_heavy.wav", this.rainHeavyGain);
@@ -269,10 +269,9 @@ export class AudioManager {
     const now = this.ctx.currentTime;
     const ramp = 2.5;
 
-    // Daytime Birds fade at night or in rain
+    // Bird chirps disabled per user request
     if (this.birdsGain) {
-      const targetBirds = !isNight && !isRain ? 0.35 : 0.0;
-      this.birdsGain.gain.linearRampToValueAtTime(targetBirds, now + ramp);
+      this.birdsGain.gain.setValueAtTime(0.0, now);
     }
 
     // Nighttime Crickets rise at night (unless raining heavily)
