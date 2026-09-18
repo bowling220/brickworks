@@ -517,9 +517,10 @@ export function BuildUI({
             className="build-back-button glass-button"
             onClick={onBack}
             aria-label="Back to main menu"
+            title="Back to menu"
           >
             <ArrowLeft size={20} strokeWidth={2.6} />
-            <span>Menu</span>
+            <span className="hidden sm:inline">Menu</span>
           </button>
 
           {onOpenMyBuilds && editorMode !== "walk" && (
@@ -531,7 +532,7 @@ export function BuildUI({
               title="Open My Worlds library"
             >
               <FolderOpen size={18} strokeWidth={2.4} />
-              <span className="my-builds-btn-label">My Worlds</span>
+              <span className="my-builds-btn-label hidden sm:inline">My Worlds</span>
             </button>
           )}
         </div>
@@ -552,7 +553,7 @@ export function BuildUI({
               title="Build Mode (Key B) - Click surfaces to stack & place bricks"
             >
               <Hammer size={15} strokeWidth={2.6} />
-              <span>BUILD</span>
+              <span className="mode-label">BUILD</span>
               <kbd className="mode-key">B</kbd>
             </button>
 
@@ -568,7 +569,7 @@ export function BuildUI({
               title="Select Mode (Key S) - Click existing bricks to select & edit"
             >
               <MousePointerClick size={15} strokeWidth={2.6} />
-              <span>SELECT</span>
+              <span className="mode-label">SELECT</span>
               <kbd className="mode-key">S</kbd>
             </button>
 
@@ -584,7 +585,7 @@ export function BuildUI({
               title="Terrain Mode (Key T) - Sculpt, shape, and paint the world"
             >
               <Mountain size={15} strokeWidth={2.6} />
-              <span>TERRAIN</span>
+              <span className="mode-label">TERRAIN</span>
               <kbd className="mode-key">T</kbd>
             </button>
 
@@ -600,14 +601,14 @@ export function BuildUI({
               title="Walk Mode (Key V) - Explore your creation at human scale"
             >
               <Footprints size={15} strokeWidth={2.6} />
-              <span>WALK</span>
+              <span className="mode-label">WALK</span>
               <kbd className="mode-key">V</kbd>
             </button>
           </div>
 
-          {/* Build Title (Editable) & Subtle Save Status - Hidden during Walk Mode */}
+          {/* Build Title (Editable) & Subtle Save Status - Hidden on mobile, auto-save is background active */}
           {editorMode !== "walk" && (
-            <div className="build-title-container">
+            <div className="build-title-container hidden md:flex">
               {isEditingTitle ? (
                 <div className="build-title-edit-box">
                   <input
@@ -711,7 +712,7 @@ export function BuildUI({
                 title="Multi-Select Mode (Hold Shift or toggle this button)"
               >
                 <CheckSquare size={18} strokeWidth={2.4} />
-                <span className="multiselect-label">Multi-Select</span>
+                <span className="multiselect-label hidden sm:inline">Multi-Select</span>
               </button>
 
               <button
@@ -765,7 +766,7 @@ export function BuildUI({
               title="Recenter / Frame View (Key F)"
             >
               <Focus size={18} strokeWidth={2.4} />
-              <span className="recenter-label">Frame</span>
+              <span className="recenter-label hidden sm:inline">Frame</span>
               <kbd className="key-hint">F</kbd>
             </button>
           )}
@@ -780,7 +781,7 @@ export function BuildUI({
               title="World Map & Waypoints (Key M)"
             >
               <MapIcon size={18} strokeWidth={2.4} />
-              <span className="map-btn-label">Map</span>
+              <span className="map-btn-label hidden sm:inline">Map</span>
               <kbd className="key-hint">M</kbd>
             </button>
           )}
@@ -885,12 +886,12 @@ export function BuildUI({
       {editorMode === "build" && !isMoving && (
         <div className="build-bottom-tray-container">
           {/* Build Sub-Tool Selector Bar */}
-          <div className="flex items-center gap-1.5 p-1 bg-black/60 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl mb-1 text-white" role="radiogroup" aria-label="Build sub-tools">
+          <div className="flex items-center gap-1.5 p-1 bg-black/60 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl mb-1 text-white max-w-full overflow-x-auto scrollbar-none" role="radiogroup" aria-label="Build sub-tools">
             <button
               type="button"
               role="radio"
               aria-checked={buildTool === "single"}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 buildTool === "single"
                   ? "bg-amber-400 text-black shadow-md scale-105"
                   : "text-white/80 hover:text-white hover:bg-white/10"
@@ -900,14 +901,14 @@ export function BuildUI({
             >
               <Hammer size={13} strokeWidth={2.6} />
               <span>Single</span>
-              <kbd className="text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">B</kbd>
+              <kbd className="mode-key hidden sm:inline-block text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">B</kbd>
             </button>
 
             <button
               type="button"
               role="radio"
               aria-checked={buildTool === "line"}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 buildTool === "line"
                   ? "bg-amber-400 text-black shadow-md scale-105"
                   : "text-white/80 hover:text-white hover:bg-white/10"
@@ -916,15 +917,16 @@ export function BuildUI({
               title="Line / Wall Mode (Key L) - Click start and end points to generate straight walls and lines"
             >
               <Minus size={13} strokeWidth={2.6} className="rotate-45" />
-              <span>Line / Wall</span>
-              <kbd className="text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">L</kbd>
+              <span className="hidden sm:inline">Line / Wall</span>
+              <span className="sm:hidden">Line</span>
+              <kbd className="mode-key hidden sm:inline-block text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">L</kbd>
             </button>
 
             <button
               type="button"
               role="radio"
               aria-checked={buildTool === "area"}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 buildTool === "area"
                   ? "bg-amber-400 text-black shadow-md scale-105"
                   : "text-white/80 hover:text-white hover:bg-white/10"
@@ -933,15 +935,16 @@ export function BuildUI({
               title="Area / Floor Mode (Key K) - Click two corners to fill floors, plates, or roofs"
             >
               <LayoutGrid size={13} strokeWidth={2.6} />
-              <span>Area / Floor</span>
-              <kbd className="text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">K</kbd>
+              <span className="hidden sm:inline">Area / Floor</span>
+              <span className="sm:hidden">Area</span>
+              <kbd className="mode-key hidden sm:inline-block text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">K</kbd>
             </button>
 
             <button
               type="button"
               role="radio"
               aria-checked={buildTool === "eyedropper"}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 buildTool === "eyedropper"
                   ? "bg-amber-400 text-black shadow-md scale-105"
                   : "text-white/80 hover:text-white hover:bg-white/10"
@@ -951,40 +954,55 @@ export function BuildUI({
             >
               <Pipette size={13} strokeWidth={2.6} />
               <span>Sample</span>
-              <kbd className="text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">I</kbd>
+              <kbd className="mode-key hidden sm:inline-block text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">I</kbd>
             </button>
 
             {onOpenPartsBrowser && (
               <button
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300 hover:text-amber-200 hover:bg-amber-400/20 transition-all border border-amber-400/30 ml-1"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300 hover:text-amber-200 hover:bg-amber-400/20 transition-all border border-amber-400/30 whitespace-nowrap ml-1"
                 onClick={onOpenPartsBrowser}
                 title="Parts Browser (Key P) - Browse all 40+ bricks, slopes, windows, doors, arches & props"
               >
                 <Box size={13} strokeWidth={2.6} />
-                <span>All Parts...</span>
-                <kbd className="text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">P</kbd>
+                <span className="hidden sm:inline">All Parts...</span>
+                <span className="sm:hidden">Parts</span>
+                <kbd className="mode-key hidden sm:inline-block text-[10px] px-1 py-0.2 bg-black/20 rounded font-mono">P</kbd>
               </button>
             )}
           </div>
 
-          {/* Circular Color Swatches */}
-          <div className="color-swatches-row" role="radiogroup" aria-label="Brick color selection">
-            {COLOR_PALETTE.map((c) => {
-              const isSelected = c.hex === activeColor;
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={`color-swatch-circle ${isSelected ? "is-selected" : ""}`}
-                  style={{ backgroundColor: c.hex }}
-                  onClick={() => onSelectColor(c.hex)}
-                  aria-label={`Color: ${c.name}`}
-                  aria-checked={isSelected}
-                  role="radio"
-                />
-              );
-            })}
+          {/* Color row with integrated compact rotate button */}
+          <div className="build-color-row">
+            <div className="color-swatches-row" role="radiogroup" aria-label="Brick color selection">
+              {COLOR_PALETTE.map((c) => {
+                const isSelected = c.hex === activeColor;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={`color-swatch-circle ${isSelected ? "is-selected" : ""}`}
+                    style={{ backgroundColor: c.hex }}
+                    onClick={() => onSelectColor(c.hex)}
+                    aria-label={`Color: ${c.name}`}
+                    aria-checked={isSelected}
+                    role="radio"
+                  />
+                );
+              })}
+            </div>
+
+            {/* Compact inline rotate button for mobile */}
+            <button
+              type="button"
+              className="build-rotate-mobile-btn glass-button md:hidden"
+              onClick={onRotate}
+              aria-label={`Rotate brick 90 degrees (currently ${rotation}°)`}
+              title="Rotate (R key)"
+            >
+              <RotateCw size={16} strokeWidth={2.6} />
+              <span className="rotation-angle-pill">{rotation}°</span>
+            </button>
           </div>
 
           {/* Horizontally scrollable brick & plate palette */}
@@ -1002,7 +1020,23 @@ export function BuildUI({
                   <Box size={14} />
                 </div>
                 <span className="item-label text-amber-400 font-bold">Catalog</span>
-                <span className="item-shortcut">P</span>
+                <span className="item-shortcut hidden sm:inline">P</span>
+              </button>
+            )}
+
+            {/* Blueprints shortcut in tray */}
+            {onOpenBlueprints && (
+              <button
+                type="button"
+                className="palette-brick-item blueprint-catalog-shortcut-btn"
+                onClick={onOpenBlueprints}
+                aria-label="Open Blueprints Library"
+                title="Blueprints - Place saved structures"
+              >
+                <div className="w-8 h-5 rounded border border-dashed border-sky-400/60 flex items-center justify-center text-sky-400">
+                  <Layers size={14} />
+                </div>
+                <span className="item-label text-sky-300 font-bold">Prints</span>
               </button>
             )}
 
@@ -1027,25 +1061,11 @@ export function BuildUI({
                     color={activeColor}
                   />
                   <span className="item-label">{item.label}</span>
-                  {item.shortcut && <span className="item-shortcut">{item.shortcut}</span>}
+                  {item.shortcut && <span className="item-shortcut hidden sm:inline">{item.shortcut}</span>}
                 </button>
               );
             })}
           </div>
-
-          {/* Blueprints Library Button */}
-          {onOpenBlueprints && (
-            <button
-              type="button"
-              className="blueprint-open-btn glass-button flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white/90 hover:text-white whitespace-nowrap"
-              onClick={onOpenBlueprints}
-              aria-label="Open Blueprints Library"
-              title="Blueprints - Place saved structures"
-            >
-              <Layers size={15} strokeWidth={2.6} className="text-amber-400" />
-              <span>Blueprints</span>
-            </button>
-          )}
         </div>
       )}
 
@@ -1445,7 +1465,7 @@ export function BuildUI({
 
           <button
             type="button"
-            className="build-rotate-button glass-button"
+            className={`build-rotate-button glass-button ${editorMode === "build" ? "hidden md:flex" : ""}`}
             onClick={onRotate}
             aria-label="Rotate brick 90 degrees (R key)"
           >
