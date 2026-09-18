@@ -72,6 +72,7 @@ import {
 } from "@/components/brickworks/WorldEnvironment";
 import { getAudioManager } from "@/components/brickworks/AudioManager";
 import { getMusicManager } from "@/components/brickworks/MusicManager";
+import { MenuAudioWidget } from "@/components/brickworks/MenuAudioWidget";
 
 function AccountButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -79,7 +80,10 @@ function AccountButton() {
     <button
       className="account-button glass-button"
       type="button"
-      onClick={() => setIsLoggedIn((value) => !value)}
+      onClick={() => {
+        getAudioManager().playUiClick();
+        setIsLoggedIn((value) => !value);
+      }}
       aria-label={isLoggedIn ? "Open profile" : "Log in or sign up"}
     >
       <span className="icon-orb" aria-hidden="true">
@@ -95,7 +99,12 @@ function SettingsButton({ onOpenAdvanced }: { onOpenAdvanced?: () => void }) {
   const [music, setMusic] = useState(true);
   const [effects, setEffects] = useState(true);
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        if (open) getAudioManager().playDialogOpen();
+        else getAudioManager().playDialogClose();
+      }}
+    >
       <DialogTrigger asChild>
         <button
           className="settings-button glass-button"
@@ -119,6 +128,7 @@ function SettingsButton({ onOpenAdvanced }: { onOpenAdvanced?: () => void }) {
             label="Sound effects"
             checked={sound}
             onCheckedChange={(val) => {
+              getAudioManager().playUiClick();
               setSound(val);
               getAudioManager().setSfxVolume(val ? 0.6 : 0.0);
             }}
@@ -128,18 +138,30 @@ function SettingsButton({ onOpenAdvanced }: { onOpenAdvanced?: () => void }) {
             label="Music"
             checked={music}
             onCheckedChange={(val) => {
+              getAudioManager().playUiClick();
               setMusic(val);
               getAudioManager().setMusicVolume(val ? 0.22 : 0.0);
             }}
           />
-          <SettingRow icon={<Sparkles />} label="Ambient motion" checked={effects} onCheckedChange={setEffects} />
+          <SettingRow
+            icon={<Sparkles />}
+            label="Ambient motion"
+            checked={effects}
+            onCheckedChange={(val) => {
+              getAudioManager().playUiClick();
+              setEffects(val);
+            }}
+          />
         </div>
         {onOpenAdvanced && (
           <div className="pt-2 border-t border-white/10 mt-2">
             <button
               type="button"
-              onClick={onOpenAdvanced}
-              className="w-full py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/30 text-xs font-semibold flex items-center justify-center gap-2 transition"
+              onClick={() => {
+                getAudioManager().playUiClick();
+                onOpenAdvanced();
+              }}
+              className="w-full py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/30 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <span>Atmosphere, Weather & Audio Settings</span>
             </button>
@@ -226,6 +248,36 @@ export default function HomePage() {
     material: "grass",
   });
   const [terrainMods, setTerrainMods] = useState<Record<string, { terrainMod?: ChunkTerrainMod }>>({});
+
+  // Initialize menu audio and setup one-time browser unlock listener
+  useEffect(() => {
+    const audioMgr = getAudioManager();
+    const musicMgr = getMusicManager();
+
+    // Try starting menu music immediately (succeeds if browser allows autoplay)
+    if (gameMode === "home") {
+      musicMgr.startMenuMusic();
+    }
+
+    // Modern browsers block Web Audio until a user gesture.
+    // On first click/tap/keypress anywhere, unlock audio context & start menu soundtrack!
+    const handleFirstGesture = () => {
+      audioMgr.initContext();
+      if (gameMode === "home" && !musicMgr.getIsPlaying()) {
+        musicMgr.startMenuMusic();
+      }
+    };
+
+    window.addEventListener("pointerdown", handleFirstGesture, { passive: true });
+    window.addEventListener("keydown", handleFirstGesture, { passive: true });
+    window.addEventListener("touchstart", handleFirstGesture, { passive: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", handleFirstGesture);
+      window.removeEventListener("keydown", handleFirstGesture);
+      window.removeEventListener("touchstart", handleFirstGesture);
+    };
+  }, [gameMode]);
   const terrainModsRef = useRef(terrainMods);
   useEffect(() => {
     terrainModsRef.current = terrainMods;
@@ -712,7 +764,10 @@ export default function HomePage() {
   const handleTransitionComplete = useCallback(() => {
     setGameMode((current) => {
       if (current === "transitioning-to-build") return "build";
-      if (current === "transitioning-to-home") return "home";
+      if (current === "transitioning-to-home") {
+        getMusicManager().startMenuMusic();
+        return "home";
+      }
       return current;
     });
   }, []);
@@ -1027,7 +1082,10 @@ export default function HomePage() {
             <button
               type="button"
               className="homepage-my-builds-button glass-button"
-              onClick={() => setIsMyWorldsOpen(true)}
+              onClick={() => {
+                getAudioManager().playUiClick();
+                setIsMyWorldsOpen(true);
+              }}
               aria-label="Open My Worlds library"
             >
               <FolderOpen size={19} strokeWidth={2.4} />
@@ -1035,6 +1093,11 @@ export default function HomePage() {
             </button>
           </div>
         </section>
+
+        {/* Corner Menu Soundtrack Player Widget */}
+        <div className="absolute left-[clamp(16px,2.5vw,30px)] bottom-[clamp(16px,2.5vw,30px)] z-10 pointer-events-auto">
+          <MenuAudioWidget />
+        </div>
 
         {/* Clean circular settings gear button */}
         <div className="corner-settings">

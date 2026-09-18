@@ -90,6 +90,20 @@ export class MusicManager {
     // Singleton
   }
 
+  private subscribers: Set<(track: MusicTrack | null, isPlaying: boolean) => void> = new Set();
+
+  public subscribe(callback: (track: MusicTrack | null, isPlaying: boolean) => void): () => void {
+    this.subscribers.add(callback);
+    callback(this.currentTrack, this.isPlaying);
+    return () => {
+      this.subscribers.delete(callback);
+    };
+  }
+
+  private notifySubscribers() {
+    this.subscribers.forEach((cb) => cb(this.currentTrack, this.isPlaying));
+  }
+
   public getCurrentTrack(): MusicTrack | null {
     return this.currentTrack;
   }
@@ -102,8 +116,78 @@ export class MusicManager {
    * Starts music playback with intelligent context selection
    */
   public start(timeOfDay = 12.0, weatherType: WeatherType = "clear") {
-    if (this.isPlaying || this.currentAudio) return;
+    if (this.isPlaying && this.currentAudio) return;
     this.playNextTrack(timeOfDay, weatherType);
+  }
+
+  /**
+   * Starts or resumes the dedicated BRICKWORKS menu soundtrack.
+   * Defaults to "Morning" by Kevin MacLeod or cycles peaceful daytime tracks.
+   */
+  public startMenuMusic() {
+    if (this.isPlaying && this.currentAudio) return;
+
+    // Prefer peaceful morning as the signature menu theme
+    const menuTrack = SOUNDTRACK.find((t) => t.id === "peaceful_morning") || SOUNDTRACK[0];
+    this.playSpecificTrack(menuTrack);
+  }
+
+  /**
+   * Plays a specific music track with smooth crossfade
+   */
+  public playSpecificTrack(chosen: MusicTrack, fadeSec = 3.0) {
+    this.stopCurrentTrack(1.0);
+
+    this.currentTrack = chosen;
+    this.lastTrackId = chosen.id;
+    this.isPlaying = true;
+    this.notifySubscribers();
+
+    const audio = new Audio(chosen.url);
+    audio.crossOrigin = "anonymous";
+    audio.preload = "auto";
+    this.currentAudio = audio;
+
+    const audioMgr = getAudioManager();
+    const ctx = audioMgr.initContext();
+    const musicGain = audioMgr.getMusicGainNode();
+
+    if (ctx && musicGain) {
+      try {
+        const source = ctx.createMediaElementSource(audio);
+        this.currentSourceNode = source;
+
+        const trackGain = ctx.createGain();
+        this.trackGainNode = trackGain;
+        trackGain.gain.setValueAtTime(0.001, ctx.currentTime);
+        trackGain.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + fadeSec);
+
+        source.connect(trackGain);
+        trackGain.connect(musicGain);
+      } catch {
+        audio.volume = 0.5;
+      }
+    }
+
+    audio.onended = () => {
+      this.handleTrackEnded(12.0, "clear");
+    };
+
+    audio.onerror = () => {
+      this.handleTrackEnded(12.0, "clear");
+    };
+
+    audio.play().then(() => {
+      this.isPlaying = true;
+      this.notifySubscribers();
+    }).catch(() => {
+      // Browser autoplay policy blocked audio before user interaction
+      this.isPlaying = false;
+      this.currentAudio = null;
+      this.currentSourceNode = null;
+      this.trackGainNode = null;
+      this.notifySubscribers();
+    });
   }
 
   /**
@@ -118,6 +202,7 @@ export class MusicManager {
     this.currentTrack = chosen;
     this.lastTrackId = chosen.id;
     this.isPlaying = true;
+    this.notifySubscribers();
 
     const audio = new Audio(chosen.url);
     audio.crossOrigin = "anonymous";
@@ -156,9 +241,16 @@ export class MusicManager {
       this.handleTrackEnded(timeOfDay, weatherType);
     };
 
-    audio.play().catch(() => {
+    audio.play().then(() => {
+      this.isPlaying = true;
+      this.notifySubscribers();
+    }).catch(() => {
       // Autoplay waiting for interaction
       this.isPlaying = false;
+      this.currentAudio = null;
+      this.currentSourceNode = null;
+      this.trackGainNode = null;
+      this.notifySubscribers();
     });
   }
 
@@ -196,6 +288,7 @@ export class MusicManager {
   private handleTrackEnded(timeOfDay: number, weatherType: WeatherType) {
     this.stopCurrentTrack();
     this.isPlaying = false;
+    this.notifySubscribers();
 
     // Atmospheric silence interval (35s to 75s)
     const silenceSeconds = 35 + Math.random() * 40;
@@ -243,6 +336,7 @@ export class MusicManager {
     this.trackGainNode = null;
     this.currentTrack = null;
     this.isPlaying = false;
+    this.notifySubscribers();
   }
 
   public skipTrack(timeOfDay = 12.0, weatherType: WeatherType = "clear") {
