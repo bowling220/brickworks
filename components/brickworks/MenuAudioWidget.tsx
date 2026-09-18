@@ -73,14 +73,14 @@ export function MenuAudioWidget({ className = "" }: MenuAudioWidgetProps) {
 
   return (
     <aside
-      className={`glass-panel flex items-center gap-3 px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.25)] backdrop-blur-xl transition-all duration-300 pointer-events-auto select-none ${className}`}
+      className={`glass-panel flex items-center justify-between sm:justify-start gap-2.5 sm:gap-3 px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.25)] backdrop-blur-xl transition-all duration-300 pointer-events-auto select-none w-full ${className}`}
       aria-label="Menu soundtrack player"
     >
       {/* Animated Note / Play trigger */}
       <button
         type="button"
         onClick={handleTogglePlay}
-        className="relative flex items-center justify-center w-8 h-8 rounded-full bg-sky-500/20 hover:bg-sky-500/35 border border-sky-400/40 text-sky-200 transition-all cursor-pointer group"
+        className="relative flex items-center justify-center w-8 h-8 rounded-full bg-sky-500/20 hover:bg-sky-500/35 border border-sky-400/40 text-sky-200 transition-all cursor-pointer group shrink-0"
         title={isPlaying ? "Pause music" : "Play menu music"}
         aria-label={isPlaying ? "Pause soundtrack" : "Play soundtrack"}
       >
@@ -93,7 +93,7 @@ export function MenuAudioWidget({ className = "" }: MenuAudioWidgetProps) {
 
       {/* Track info & state */}
       <div
-        className="flex flex-col cursor-pointer max-w-[150px] sm:max-w-[190px]"
+        className="flex flex-col cursor-pointer min-w-0 flex-1 max-w-[150px] sm:max-w-[190px]"
         onClick={handleTogglePlay}
         title="Click to toggle soundtrack"
       >

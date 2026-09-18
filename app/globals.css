@@ -72,15 +72,17 @@ button {
 /* Top bar with Account Button and Settings Button */
 .top-bar {
   position: absolute;
-  inset: 0 0 auto 0;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
-  padding-bottom: 16px;
+  padding: 16px 20px;
+  padding-top: max(56px, calc(env(safe-area-inset-top, 0px) + 12px));
+  padding-left: max(16px, calc(env(safe-area-inset-left, 0px) + 8px));
+  padding-right: max(16px, calc(env(safe-area-inset-right, 0px) + 8px));
   pointer-events: none;
 }
 
@@ -368,8 +370,13 @@ button {
 }
 
 @media (max-width: 640px) {
+  .top-bar {
+    padding-top: max(56px, calc(env(safe-area-inset-top, 0px) + 12px));
+    padding-left: max(14px, calc(env(safe-area-inset-left, 0px) + 6px));
+    padding-right: max(14px, calc(env(safe-area-inset-right, 0px) + 6px));
+  }
   .hero-ui-container {
-    bottom: max(88px, calc(env(safe-area-inset-bottom) + 78px));
+    bottom: max(96px, calc(env(safe-area-inset-bottom, 0px) + 84px));
     width: min(420px, calc(100vw - 32px));
   }
   .hero-tagline {

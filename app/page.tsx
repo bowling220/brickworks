@@ -114,7 +114,7 @@ function SettingsButton({ onOpenAdvanced }: { onOpenAdvanced?: () => void }) {
           <Settings size={28} strokeWidth={2.8} aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="settings-panel border-white/40 bg-[#113c74]/90 text-white shadow-[0_30px_80px_rgba(0,24,65,.45)] backdrop-blur-2xl sm:max-w-[390px]">
+      <DialogContent className="settings-panel w-[calc(100vw-32px)] sm:max-w-[390px] border-white/40 bg-[#113c74]/90 text-white shadow-[0_30px_80px_rgba(0,24,65,.45)] backdrop-blur-2xl">
         <DialogHeader>
           <p className="settings-kicker">Game menu</p>
           <DialogTitle className="text-3xl font-black tracking-tight">Settings</DialogTitle>
@@ -1103,8 +1103,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Menu Soundtrack Player Widget */}
-        <div className="menu-audio-container">
+        {/* Menu Soundtrack Player Widget fixed at bottom */}
+        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto w-[calc(100vw-32px)] max-w-[360px] flex justify-center pb-[env(safe-area-inset-bottom,0px)]">
           <MenuAudioWidget />
         </div>
       </div>
