@@ -272,42 +272,55 @@ function createWaterLoop(durationSec = 5.0) {
 }
 
 /**
- * Generates daytime bird chirps
+ * Generates daytime bird chirps with phase-continuous harmonic synthesis
+ * and zero-crossing Hann windows to eliminate clicking artifacts.
  */
-function createBirdsAmbience(durationSec = 6.0) {
+function createBirdsAmbience(durationSec = 8.0) {
   const numSamples = Math.floor(SAMPLE_RATE * durationSec);
   const samples = new Float32Array(numSamples);
-  // Periodic chirp events at 0.8s, 2.4s, 4.2s
-  const chirpTimes = [0.8, 2.4, 4.2];
-  for (const ct of chirpTimes) {
-    const startIdx = Math.floor(ct * SAMPLE_RATE);
-    const chirpLen = Math.floor(0.22 * SAMPLE_RATE);
+  // Natural distant bird chirps at 1.8s and 5.2s
+  const chirps = [
+    { start: 1.8, dur: 0.18, fStart: 2800, fEnd: 3600 },
+    { start: 2.1, dur: 0.22, fStart: 3400, fEnd: 2900 },
+    { start: 5.2, dur: 0.20, fStart: 3000, fEnd: 3800 },
+    { start: 5.5, dur: 0.16, fStart: 3600, fEnd: 3200 },
+  ];
+
+  for (const c of chirps) {
+    const startIdx = Math.floor(c.start * SAMPLE_RATE);
+    const chirpLen = Math.floor(c.dur * SAMPLE_RATE);
+    let phase = 0;
     for (let i = 0; i < chirpLen; i++) {
       const idx = startIdx + i;
       if (idx >= numSamples) break;
-      const t = i / SAMPLE_RATE;
-      const env = Math.sin((t / 0.22) * Math.PI);
-      // Frequency chirp sweep 2400Hz -> 3800Hz
-      const freq = 2400 + Math.sin(t * 36.0) * 1200;
-      samples[idx] += Math.sin(2 * Math.PI * freq * t) * env * 0.25;
+      const progress = i / chirpLen;
+      // Hann window for ultra-smooth start and end with zero click/pop
+      const env = 0.5 * (1 - Math.cos(2 * Math.PI * progress));
+      // Smooth frequency glissando
+      const currentFreq = c.fStart + (c.fEnd - c.fStart) * progress;
+      phase += (2 * Math.PI * currentFreq) / SAMPLE_RATE;
+      // Gentle harmonic tone with fundamental + subtle overtone
+      const tone = Math.sin(phase) + 0.15 * Math.sin(phase * 2);
+      samples[idx] += tone * env * 0.08;
     }
   }
   return samples;
 }
 
 /**
- * Generates nighttime crickets ambience
+ * Generates nighttime crickets ambience with continuous sinusoidal stridulation
  */
-function createCricketsAmbience(durationSec = 5.0) {
+function createCricketsAmbience(durationSec = 6.0) {
   const numSamples = Math.floor(SAMPLE_RATE * durationSec);
   const samples = new Float32Array(numSamples);
+  let phase = 0;
   for (let i = 0; i < numSamples; i++) {
     const t = i / SAMPLE_RATE;
-    // 4.5kHz resonant pulse modulated at 16Hz
-    const carrier = Math.sin(2 * Math.PI * 4600 * t);
-    const pulse = Math.max(0, Math.sin(2 * Math.PI * 16.0 * t));
-    const chirpEnvelope = Math.max(0, Math.sin((2 * Math.PI * t) / 1.25));
-    samples[i] = carrier * Math.pow(pulse, 3.0) * chirpEnvelope * 0.18;
+    phase += (2 * Math.PI * 4500) / SAMPLE_RATE;
+    // Continuous soft sinusoidal stridulation (no sharp discontinuities)
+    const stridulation = 0.5 + 0.5 * Math.sin(2 * Math.PI * 14.0 * t);
+    const phrase = 0.5 + 0.5 * Math.sin((2 * Math.PI * t) / 2.0);
+    samples[i] = Math.sin(phase) * Math.pow(stridulation, 2.0) * phrase * 0.04;
   }
   return samples;
 }

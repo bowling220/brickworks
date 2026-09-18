@@ -160,9 +160,9 @@ export class AudioManager {
     this.waterGain.gain.setValueAtTime(0.0, this.ctx.currentTime);
     this.waterGain.connect(this.ambientGain);
 
-    // Ambient Sub-Gains
+    // Ambient Sub-Gains (All initialize muted until player enters in-game world)
     this.windGentleGain = this.ctx.createGain();
-    this.windGentleGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+    this.windGentleGain.gain.setValueAtTime(0.0, this.ctx.currentTime);
     this.windGentleGain.connect(this.ambientGain);
 
     this.windStrongGain = this.ctx.createGain();
@@ -170,7 +170,7 @@ export class AudioManager {
     this.windStrongGain.connect(this.ambientGain);
 
     this.birdsGain = this.ctx.createGain();
-    this.birdsGain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+    this.birdsGain.gain.setValueAtTime(0.0, this.ctx.currentTime);
     this.birdsGain.connect(this.ambientGain);
 
     this.cricketsGain = this.ctx.createGain();
@@ -244,6 +244,24 @@ export class AudioManager {
   // -------------------------------------------------------------
 
   /**
+   * Silences all world ambient and weather loops when in the main menu,
+   * ensuring only the menu soundtrack and UI clicks are audible.
+   */
+  public setInMenuMode(inMenu: boolean) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    if (inMenu) {
+      this.birdsGain?.gain.setValueAtTime(0.0, now);
+      this.cricketsGain?.gain.setValueAtTime(0.0, now);
+      this.windGentleGain?.gain.setValueAtTime(0.0, now);
+      this.windStrongGain?.gain.setValueAtTime(0.0, now);
+      this.waterGain?.gain.setValueAtTime(0.0, now);
+      this.rainLightGain?.gain.setValueAtTime(0.0, now);
+      this.rainHeavyGain?.gain.setValueAtTime(0.0, now);
+    }
+  }
+
+  /**
    * Updates ambient layers based on Day/Night state and wind strength
    */
   public setAmbienceState(isNight: boolean, isRain: boolean, windStrength: number) {
@@ -253,21 +271,21 @@ export class AudioManager {
 
     // Daytime Birds fade at night or in rain
     if (this.birdsGain) {
-      const targetBirds = !isNight && !isRain ? 0.65 : 0.0;
+      const targetBirds = !isNight && !isRain ? 0.35 : 0.0;
       this.birdsGain.gain.linearRampToValueAtTime(targetBirds, now + ramp);
     }
 
     // Nighttime Crickets rise at night (unless raining heavily)
     if (this.cricketsGain) {
-      const targetCrickets = isNight && !isRain ? 0.55 : 0.0;
+      const targetCrickets = isNight && !isRain ? 0.25 : 0.0;
       this.cricketsGain.gain.linearRampToValueAtTime(targetCrickets, now + ramp);
     }
 
     // Wind blend
     if (this.windGentleGain && this.windStrongGain) {
       const strongFactor = Math.max(0, (windStrength - 0.4) / 0.6);
-      this.windGentleGain.gain.linearRampToValueAtTime(0.45 * (1.0 - strongFactor * 0.5), now + ramp);
-      this.windStrongGain.gain.linearRampToValueAtTime(0.65 * strongFactor, now + ramp);
+      this.windGentleGain.gain.linearRampToValueAtTime(0.35 * (1.0 - strongFactor * 0.5), now + ramp);
+      this.windStrongGain.gain.linearRampToValueAtTime(0.45 * strongFactor, now + ramp);
     }
   }
 

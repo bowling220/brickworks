@@ -256,6 +256,7 @@ export default function HomePage() {
 
     // Try starting menu music immediately (succeeds if browser allows autoplay)
     if (gameMode === "home") {
+      audioMgr.setInMenuMode(true);
       musicMgr.startMenuMusic();
     }
 
@@ -263,8 +264,11 @@ export default function HomePage() {
     // On first click/tap/keypress anywhere, unlock audio context & start menu soundtrack!
     const handleFirstGesture = () => {
       audioMgr.initContext();
-      if (gameMode === "home" && !musicMgr.getIsPlaying()) {
-        musicMgr.startMenuMusic();
+      if (gameMode === "home") {
+        audioMgr.setInMenuMode(true);
+        if (!musicMgr.getIsPlaying()) {
+          musicMgr.startMenuMusic();
+        }
       }
     };
 
@@ -654,6 +658,7 @@ export default function HomePage() {
     const loadedEnv = world.environment || getDefaultWorldEnvironment();
     setEnvironment(loadedEnv);
     environmentRef.current = loadedEnv;
+    getAudioManager().setInMenuMode(false);
     getAudioManager().setWeatherState(loadedEnv.weatherType, loadedEnv.weatherIntensity);
     const isNight = loadedEnv.timeOfDay < 5.0 || loadedEnv.timeOfDay >= 19.5;
     const isRain = loadedEnv.weatherType === "rain" || loadedEnv.weatherType === "storm";
@@ -707,6 +712,7 @@ export default function HomePage() {
     const defEnv = newWorld.environment || getDefaultWorldEnvironment();
     setEnvironment(defEnv);
     environmentRef.current = defEnv;
+    getAudioManager().setInMenuMode(false);
     getAudioManager().setWeatherState(defEnv.weatherType, defEnv.weatherIntensity);
     const isNight = defEnv.timeOfDay < 5.0 || defEnv.timeOfDay >= 19.5;
     const isRain = defEnv.weatherType === "rain" || defEnv.weatherType === "storm";
@@ -722,6 +728,7 @@ export default function HomePage() {
   // Transition to Build Mode: resumes recent world or prompts Create World
   const handlePlay = useCallback(async () => {
     getAudioManager().playUiClick();
+    getAudioManager().setInMenuMode(false);
     getMusicManager().start(environment.timeOfDay, environment.weatherType);
     if (!currentWorld) {
       try {
@@ -765,6 +772,7 @@ export default function HomePage() {
     setGameMode((current) => {
       if (current === "transitioning-to-build") return "build";
       if (current === "transitioning-to-home") {
+        getAudioManager().setInMenuMode(true);
         getMusicManager().startMenuMusic();
         return "home";
       }
