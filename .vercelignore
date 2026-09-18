@@ -1,0 +1,10 @@
+.wrangler
+.sites-runtime
+.vinext
+dist
+drizzle
+scripts/test_*
+scripts/audit*
+scripts/e2e*
+.gemini
+*.tsbuildinfo

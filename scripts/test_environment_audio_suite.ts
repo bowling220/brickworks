@@ -264,7 +264,7 @@ async function runSuite() {
   assert(loadedA?.environment?.weatherType === "rain", "Persisted Weather A", "World A preserved rain weather");
 
   // Backward compatibility test: load world with missing environment field
-  const legacyWorld: SavedWorld = {
+  const legacyWorld = {
     id: "legacy_world_v1",
     name: "Legacy World Without Env",
     createdAt: new Date().toISOString(),
